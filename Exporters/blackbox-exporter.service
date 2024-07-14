@@ -1,0 +1,18 @@
+[Unit]
+Description=blackbox exporter
+Requires=docker.service
+After=docker.service
+ 
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm blackbox-exporter
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --publish=9115:9115 \
+  --memory=64m \
+  --name=blackbox-exporter \
+  prom/blackbox-exporter:v0.22.0
+ExecStop=/usr/bin/docker stop -t 10 blackbox-exporter
+ 
+[Install]
+WantedBy=multi-user.target

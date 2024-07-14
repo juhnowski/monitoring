@@ -1,0 +1,48 @@
+global:
+  resolve_timeout: 10s
+ 
+  # mail configuration
+  smtp_smarthost: "<smtp_server_address>:25"
+  smtp_from: "<smtp_from>"
+  smtp_auth_username: "<smtp_username>"
+  smtp_auth_password: "<smtp_password>"
+ 
+route:
+  # default receiver
+  receiver: "webhook_alert"
+  group_wait: 20s
+  group_interval: 1m
+  group_by: [service]
+  repeat_interval: 3h
+ 
+  # receiver tree
+  routes:
+    - receiver: "mail"
+      match_re:
+        severity: warning|error|critical
+      continue: true
+    - receiver: "webhook_alert"
+      match_re:
+        severity: warning|error|critical
+      continue: true
+    - receiver: "webhook_report"
+      match_re:
+        severity: info
+ 
+# receiver settings
+receivers:
+  - name: "mail"
+    email_configs:
+      - to: <mail_to>
+ 
+  - name: "webhook_alert"
+    webhook_configs:
+    - send_resolved: true
+      # api endpoint for webhook
+      url: http://webhook_api_url/alert
+ 
+  - name: "webhook_report"
+    webhook_configs:
+    - send_resolved: false
+      # api endpoint for webhook
+      url: http://webhook_api_url/report
