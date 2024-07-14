@@ -1,5 +1,6 @@
 # Описание
 Cистема мониторинга на основе Prometheus – PAVG (Prometheus, Alertmanager, VictoriaMetrics, Grafana
+![alt Ожидаемый результат](monitoring.png)
 
 # Подготовка
 ```
